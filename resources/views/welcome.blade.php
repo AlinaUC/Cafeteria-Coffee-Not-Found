@@ -18,6 +18,7 @@
             <header class="bg-white/20 backdrop-blur-md border-b border-white/30 shadow-xl">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <h1 class="text-2xl font-bold text-white drop-shadow-lg">☕ Coffee Not Found</h1>
+                    
                     @auth
                         <a href="{{ route('dashboard') }}" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2 rounded-lg transition font-semibold">
                             Dashboard
