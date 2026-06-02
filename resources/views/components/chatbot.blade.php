@@ -8,7 +8,7 @@
         <!-- Header -->
         <div style="background:#92400e;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:10px;">
-                <div style="width:32px;height:32px;background:#b45309;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;">🤖</div>
+                <img src="{{ asset('images/ChatBot.png') }}" alt="ChatBot" style="width:40px;height:40px;object-fit:contain;">
                 <div>
                     <div style="font-size:13px;font-weight:600;">Coffee Not Found</div>
                     <div style="font-size:11px;opacity:0.85;">Asistente virtual ✦ IA</div>
@@ -20,7 +20,7 @@
         <!-- Mensajes -->
         <div id="chatbot-messages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f9fafb;">
             <div style="display:flex;gap:8px;align-items:flex-start;">
-                <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+                <img src="{{ asset('images/ChatBot.png') }}" alt="ChatBot" style="width: 40px;height: 40px;object-fit:contain;">
                 <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 12px;font-size:13px;color:#374151;max-width:230px;line-height:1.5;border:1px solid #e5e7eb;">
                     ¡Hola! 👋 Soy el asistente de <strong>Coffee Not Found</strong>. ¿En qué te puedo ayudar?
                     <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
@@ -54,10 +54,14 @@
 
     <!-- Botón flotante -->
     <button onclick="cbToggle()" id="chatbot-btn"
-        style="width:52px;height:52px;background:#92400e;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.2);"
+        style="width:52px;height:52px;background:#92400e;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:transform 0.2s ease;"
         onmouseover="this.style.transform='scale(1.1)'"
         onmouseout="this.style.transform='scale(1)'">
-        <span id="chatbot-icon">☕</span>
+
+        <img id="chatbot-icon"
+            src="{{ asset('images/ChatBot.png') }}"
+            alt="ChatBot"
+            style="width:50px;height:50px;object-fit:contain;">
     </button>
 </div>
 
@@ -76,9 +80,7 @@ let cbHistory = [];
 function cbToggle() {
     cbOpen = !cbOpen;
     const win  = document.getElementById('chatbot-window');
-    const icon = document.getElementById('chatbot-icon');
     win.style.display = cbOpen ? 'flex' : 'none';
-    icon.textContent  = cbOpen ? '✕' : '☕';
 }
 
 function cbAddMsg(text, isUser) {
@@ -91,7 +93,10 @@ function cbAddMsg(text, isUser) {
     } else {
         div.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
         div.innerHTML = `
-            <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+            <img src="{{ asset('images/ChatBot.png') }}"
+            alt="ChatBot"
+            style="width:40px;height:40px;object-fit:contain;flex-shrink:0;margin-top:2px;">
+
             <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 12px;font-size:13px;color:#374151;max-width:230px;line-height:1.5;border:1px solid #e5e7eb;">${text}</div>`;
     }
 
@@ -105,7 +110,9 @@ function cbShowTyping() {
     div.id = 'cb-typing';
     div.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
     div.innerHTML = `
-        <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+        <img src="{{ asset('images/ChatBot.png') }}"
+        alt="ChatBot"
+        style="width:40px;height:40px;object-fit:contain;flex-shrink:0;margin-top:2px;">
         <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 14px;border:1px solid #e5e7eb;display:flex;gap:5px;align-items:center;">
             <span style="width:7px;height:7px;border-radius:50%;background:#b45309;display:inline-block;animation:cbBounce 1s infinite 0s;"></span>
             <span style="width:7px;height:7px;border-radius:50%;background:#b45309;display:inline-block;animation:cbBounce 1s infinite 0.2s;"></span>
