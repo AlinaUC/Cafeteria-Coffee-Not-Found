@@ -41,9 +41,9 @@
                 @foreach($productos as $producto)
                 <div class="group bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                     @if($producto->imagen)
-                        <img src="{{ asset('storage/' . $producto->imagen) }}" 
-                             alt="{{ $producto->nombre }}" 
-                             class="w-full h-48 object-cover">
+                        <img src="{{ asset($producto->imagen) }}" 
+                            alt="{{ $producto->nombre }}" 
+                            class="w-full h-48 object-cover">
                     @else
                         <div class="w-full h-48 bg-white/10 flex items-center justify-center">
                             <span class="text-white/40 text-4xl">🍽️</span>

@@ -35,6 +35,14 @@ class PedidoController extends Controller
 
     public function crear(Request $request)
     {
+        // NUEVO: verificar si los pedidos están pausados
+        if (Pedido::estanPausados()) {
+            return back()->with(
+                'error',
+                'Por el momento no estamos aceptando nuevos pedidos. Por favor, inténtelo nuevamente más tarde.'
+            );
+        }
+
         $request->validate([
             'notas_especiales' => 'nullable|string|max:500',
             'programado_para' => 'nullable|date|after:now',
@@ -59,6 +67,9 @@ class PedidoController extends Controller
                 'programado_para' => $request->programado_para,
                 'notas_especiales' => $request->notas_especiales,
             ]);
+
+            // NUEVO: asignar posición en la cola FIFO
+            $pedido->asignarPosicionCola();
 
             $montoTotal = 0;
 

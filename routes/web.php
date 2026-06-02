@@ -121,6 +121,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/cocina/pedido/{id}/listo', [CocinaController::class, 'marcarListo'])->name('cocina.listo');
         Route::post('/cocina/pedido/{id}/entregado', [CocinaController::class, 'marcarEntregado'])->name('cocina.entregado');
         Route::post('/cocina/producto/{id}/disponibilidad', [CocinaController::class, 'cambiarDisponibilidad'])->name('cocina.disponibilidad');
+
+        // NUEVO
+        Route::post('/cocina/toggle-pausa', [CocinaController::class, 'togglePausa'])->name('cocina.toggle_pausa');
     });
 
     /*

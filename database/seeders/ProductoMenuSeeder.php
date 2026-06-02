@@ -11,12 +11,13 @@ class ProductoMenuSeeder extends Seeder
     public function run(): void
     {
         $productos = [
-            // Desayunos
+
+            // ===================== DESAYUNOS =====================
             [
                 'nombre' => 'Desayuno UPDS Completo',
                 'descripcion' => 'Huevos fritos o revueltos, pan tostado, queso fresco y mermelada casera',
                 'precio' => 25.00,
-                'imagen' => 'almuerzo_ejecutivo.png',
+                'imagen' => 'productos/desayuno_upds_completo.png',
                 'categoria_id' => 1,
                 'tiempo_preparacion' => 15,
                 'cantidad_disponible' => 30,
@@ -25,16 +26,18 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Café con Leche y Tostadas',
                 'descripcion' => 'Café recién molido, tostadas crujientes con mantequilla',
                 'precio' => 15.00,
+                'imagen' => 'productos/cafe_leche_tostadas.png',
                 'categoria_id' => 1,
                 'tiempo_preparacion' => 5,
                 'cantidad_disponible' => 50,
             ],
-            
-            // Almuerzos
+
+            // ===================== ALMUERZOS =====================
             [
                 'nombre' => 'Almuerzo Ejecutivo',
                 'descripcion' => 'Sopa del día, segundo con arroz, pollo o carne, ensalada y refresco',
                 'precio' => 35.00,
+                'imagen' => 'productos/almuerzo_ejecutivo.png',
                 'categoria_id' => 2,
                 'tiempo_preparacion' => 20,
                 'cantidad_disponible' => 40,
@@ -43,6 +46,7 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Hamburguesa UPDS',
                 'descripcion' => 'Hamburguesa de 150g, lechuga, tomate, queso y papas fritas',
                 'precio' => 30.00,
+                'imagen' => 'productos/hamburguesa_upds.png',
                 'categoria_id' => 2,
                 'tiempo_preparacion' => 15,
                 'cantidad_disponible' => 25,
@@ -51,18 +55,20 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Plato Vegetariano',
                 'descripcion' => 'Quinoa orgánica, verduras salteadas y aguacate fresco',
                 'precio' => 28.00,
+                'imagen' => 'productos/plato_vegetariano.png',
                 'categoria_id' => 2,
                 'tiempo_preparacion' => 15,
                 'cantidad_disponible' => 20,
                 'es_vegetariano' => true,
                 'es_vegano' => true,
             ],
-            
-            // Bebidas
+
+            // ===================== BEBIDAS =====================
             [
                 'nombre' => 'Jugo Natural',
                 'descripcion' => 'Jugos de frutas frescas de temporada',
                 'precio' => 12.00,
+                'imagen' => 'productos/jugo_natural.png',
                 'categoria_id' => 3,
                 'tiempo_preparacion' => 5,
                 'cantidad_disponible' => 60,
@@ -71,6 +77,7 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Café Americano',
                 'descripcion' => 'Café de grano boliviano de altura',
                 'precio' => 8.00,
+                'imagen' => 'productos/cafe_americano.png',
                 'categoria_id' => 3,
                 'tiempo_preparacion' => 3,
                 'cantidad_disponible' => 100,
@@ -79,16 +86,18 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Té de Coca',
                 'descripcion' => 'Infusión tradicional boliviana',
                 'precio' => 6.00,
+                'imagen' => 'productos/te_de_coca.png',
                 'categoria_id' => 3,
                 'tiempo_preparacion' => 3,
                 'cantidad_disponible' => 80,
             ],
-            
-            // Snacks
+
+            // ===================== SNACKS =====================
             [
-                'nombre' => 'Empanadas Salteñas',
-                'descripcion' => '2 empanadas tradicionales con relleno jugoso',
+                'nombre' => 'Salteñas',
+                'descripcion' => '2 Salteñas tradicionales con relleno jugoso',
                 'precio' => 20.00,
+                'imagen' => 'productos/saltenas.png',
                 'categoria_id' => 4,
                 'tiempo_preparacion' => 10,
                 'cantidad_disponible' => 35,
@@ -97,16 +106,18 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Sándwich Mixto',
                 'descripcion' => 'Pan francés, jamón, queso, lechuga y tomate',
                 'precio' => 18.00,
+                'imagen' => 'productos/sandwich_mixto.png',
                 'categoria_id' => 4,
                 'tiempo_preparacion' => 8,
                 'cantidad_disponible' => 30,
             ],
-            
-            // Postres
+
+            // ===================== POSTRES =====================
             [
                 'nombre' => 'Helado de Canela',
                 'descripcion' => 'Helado tradicional boliviano artesanal',
                 'precio' => 10.00,
+                'imagen' => 'productos/helado_canela.png',
                 'categoria_id' => 5,
                 'tiempo_preparacion' => 2,
                 'cantidad_disponible' => 40,
@@ -115,6 +126,7 @@ class ProductoMenuSeeder extends Seeder
                 'nombre' => 'Torta de Chocolate',
                 'descripcion' => 'Porción generosa con cobertura de chocolate',
                 'precio' => 15.00,
+                'imagen' => 'productos/torta_chocolate.png',
                 'categoria_id' => 5,
                 'tiempo_preparacion' => 5,
                 'cantidad_disponible' => 25,
@@ -123,8 +135,7 @@ class ProductoMenuSeeder extends Seeder
 
         foreach ($productos as $productoData) {
             $producto = ProductoMenu::create($productoData);
-            
-            // Crear inventario automáticamente
+
             Inventario::create([
                 'producto_id' => $producto->id,
                 'cantidad_actual' => $productoData['cantidad_disponible'],

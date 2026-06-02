@@ -5,43 +5,56 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use App\Models\ProductoMenu;
 use Illuminate\Http\Request;
-use App\Events\PedidoActualizado; // 🔔 NUEVO: Importar el evento
+use App\Events\PedidoActualizado;
 
 class CocinaController extends Controller
 {
+    // ─── Dashboard principal ──────────────────────────────────────────────────
+
     public function index()
     {
+        // FIFO: los pedidos se muestran por posición en cola, luego por fecha
         $pedidosPendientes = Pedido::with(['usuario', 'items.producto'])
-                                   ->where('estado', 'pendiente')
-                                   ->orderBy('created_at')
-                                   ->get();
+            ->where('estado', 'pendiente')
+            ->orderBy('posicion_cola')
+            ->orderBy('created_at')
+            ->get();
 
         $pedidosPreparando = Pedido::with(['usuario', 'items.producto'])
-                                   ->whereIn('estado', ['confirmado', 'preparando'])
-                                   ->orderBy('created_at')
-                                   ->get();
+            ->whereIn('estado', ['confirmado', 'preparando'])
+            ->orderBy('posicion_cola')
+            ->orderBy('created_at')
+            ->get();
 
         $pedidosListos = Pedido::with(['usuario', 'items.producto'])
-                               ->where('estado', 'listo')
-                               ->orderBy('updated_at', 'desc')
-                               ->get();
+            ->where('estado', 'listo')
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         $estadisticas = [
-            'pendientes' => $pedidosPendientes->count(),
-            'preparando' => $pedidosPreparando->count(),
-            'listos' => $pedidosListos->count(),
+            'pendientes'      => $pedidosPendientes->count(),
+            'preparando'      => $pedidosPreparando->count(),
+            'listos'          => $pedidosListos->count(),
             'completados_hoy' => Pedido::where('estado', 'completado')
-                                      ->whereDate('updated_at', today())
-                                      ->count(),
+                                       ->whereDate('updated_at', today())
+                                       ->count(),
+            // NUEVO: total en cola para el contador FIFO
+            'total_en_cola'   => Pedido::totalEnCola(),
         ];
+
+        // NUEVO: estado actual de la pausa
+        $pedidosPausados = Pedido::estanPausados();
 
         return view('cocina.index', compact(
             'pedidosPendientes',
             'pedidosPreparando',
             'pedidosListos',
-            'estadisticas'
+            'estadisticas',
+            'pedidosPausados'   // NUEVO
         ));
     }
+
+    // ─── Confirmar pedido ─────────────────────────────────────────────────────
 
     public function confirmar($id)
     {
@@ -51,18 +64,14 @@ class CocinaController extends Controller
             return back()->with('error', 'El pedido no puede ser confirmado');
         }
 
-        $pedido->update([
-            'estado' => 'preparando',
-        ]);
+        $pedido->update(['estado' => 'preparando']);
 
-        // 🔔 NUEVO: Disparar notificación
-        event(new PedidoActualizado(
-            $pedido, 
-            '¡Tu pedido está siendo preparado! 👨‍🍳'
-        ));
+        event(new PedidoActualizado($pedido, '¡Tu pedido está siendo preparado! 👨‍🍳'));
 
         return back()->with('success', 'Pedido confirmado y en preparación');
     }
+
+    // ─── Marcar como listo ────────────────────────────────────────────────────
 
     public function marcarListo($id)
     {
@@ -72,18 +81,14 @@ class CocinaController extends Controller
             return back()->with('error', 'El pedido no está en preparación');
         }
 
-        $pedido->update([
-            'estado' => 'listo',
-        ]);
+        $pedido->update(['estado' => 'listo']);
 
-        // 🔔 NUEVO: Disparar notificación
-        event(new PedidoActualizado(
-            $pedido, 
-            '¡Tu pedido está listo para recoger! ✅'
-        ));
+        event(new PedidoActualizado($pedido, '¡Tu pedido está listo para recoger! ✅'));
 
         return back()->with('success', 'Pedido marcado como listo');
     }
+
+    // ─── Marcar como entregado ────────────────────────────────────────────────
 
     public function marcarEntregado($id)
     {
@@ -93,29 +98,36 @@ class CocinaController extends Controller
             return back()->with('error', 'El pedido no está listo');
         }
 
-        $pedido->update([
-            'estado' => 'completado',
-        ]);
+        $pedido->update(['estado' => 'completado']);
 
-        // 🔔 NUEVO: Disparar notificación
-        event(new PedidoActualizado(
-            $pedido, 
-            '¡Que disfrutes tu pedido! 🎉'
-        ));
+        event(new PedidoActualizado($pedido, '¡Que disfrutes tu pedido! 🎉'));
 
         return back()->with('success', 'Pedido entregado exitosamente');
     }
 
+    // ─── Cambiar disponibilidad de producto ───────────────────────────────────
+
     public function cambiarDisponibilidad($id)
     {
         $producto = ProductoMenu::findOrFail($id);
-
-        $producto->update([
-            'disponible' => !$producto->disponible,
-        ]);
+        $producto->update(['disponible' => !$producto->disponible]);
 
         $estado = $producto->disponible ? 'disponible' : 'no disponible';
 
         return back()->with('success', "Producto marcado como {$estado}");
+    }
+
+    // ─── NUEVO: Pausar / reanudar recepción de pedidos ────────────────────────
+
+    public function togglePausa()
+    {
+        $estadoActual = Pedido::estanPausados();
+        Pedido::setPausa(!$estadoActual);
+
+        $mensaje = !$estadoActual
+            ? '⏸️ Recepción de pedidos pausada'
+            : '▶️ Recepción de pedidos reanudada';
+
+        return back()->with('success', $mensaje);
     }
 }
