@@ -60,8 +60,15 @@
             <main class="w-full py-8">
                 @yield('content')
             </main>
+
         </div>
     </div>
+
+    {{-- Chatbot --}}
+    @include('components.chatbot')
+
+    {{-- Footer --}}
+    @include('components.footer-social')
 
     @stack('scripts')
 
@@ -81,24 +88,11 @@
 
     <style>
         @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-        }
+        .animate-fade-in { animation: fade-in 0.3s ease-out; }
     </style>
-    {{-- Chatbot --}}
-        @include('components.chatbot')
-        
-        {{-- Footer --}}
-        @include('components.footer-social')
-</html>
+
 </body>
 </html>

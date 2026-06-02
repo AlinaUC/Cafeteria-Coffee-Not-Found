@@ -1,154 +1,171 @@
-<!-- Chatbot Widget -->
-<div id="chatbot-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-    
+{{-- resources/views/components/chatbot.blade.php --}}
+
+<div id="chatbot-container" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:12px;font-family:sans-serif;">
+
     <!-- Ventana del chat -->
-    <div id="chatbot-window" class="hidden flex-col w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+    <div id="chatbot-window" style="display:none;flex-direction:column;width:320px;height:430px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:1px solid #e5e7eb;overflow:hidden;">
+
         <!-- Header -->
-        <div class="bg-amber-700 text-white px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-sm font-bold">☕</div>
+        <div style="background:#92400e;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:#b45309;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;">🤖</div>
                 <div>
-                    <p class="font-semibold text-sm">Coffee Not Found</p>
-                    <p class="text-xs text-amber-200">Asistente virtual</p>
+                    <div style="font-size:13px;font-weight:600;">Coffee Not Found</div>
+                    <div style="font-size:11px;opacity:0.85;">Asistente virtual ✦ IA</div>
                 </div>
             </div>
-            <button onclick="toggleChatbot()" class="text-white hover:text-amber-200 text-xl leading-none">&times;</button>
+            <button onclick="cbToggle()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
         </div>
 
-        <!-- Messages -->
-        <div id="chatbot-messages" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50">
-            <div class="flex gap-2">
-                <div class="w-6 h-6 bg-amber-700 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0 mt-1">☕</div>
-                <div class="bg-white rounded-2xl rounded-tl-sm px-3 py-2 text-sm text-gray-700 shadow-sm max-w-xs">
-                    ¡Hola! 👋 Soy el asistente de <strong>Coffee Not Found</strong>. ¿En qué puedo ayudarte?
-                    <div class="flex flex-wrap gap-1 mt-2">
-                        <button onclick="sendQuickReply('¿Cuál es el menú?')" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full hover:bg-amber-200">📋 Ver menú</button>
-                        <button onclick="sendQuickReply('¿Cómo hago un pedido?')" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full hover:bg-amber-200">🛒 Hacer pedido</button>
-                        <button onclick="sendQuickReply('¿Cuáles son los horarios?')" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full hover:bg-amber-200">🕐 Horarios</button>
-                        <button onclick="sendQuickReply('¿Cómo pago?')" class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full hover:bg-amber-200">💳 Pagos</button>
+        <!-- Mensajes -->
+        <div id="chatbot-messages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#f9fafb;">
+            <div style="display:flex;gap:8px;align-items:flex-start;">
+                <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+                <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 12px;font-size:13px;color:#374151;max-width:230px;line-height:1.5;border:1px solid #e5e7eb;">
+                    ¡Hola! 👋 Soy el asistente de <strong>Coffee Not Found</strong>. ¿En qué te puedo ayudar?
+                    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+                        <span onclick="cbSendQuick('¿Cuál es el menú?')" style="font-size:11px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:20px;padding:4px 9px;cursor:pointer;">📋 Menú</span>
+                        <span onclick="cbSendQuick('¿Cómo hago un pedido?')" style="font-size:11px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:20px;padding:4px 9px;cursor:pointer;">🛒 Pedido</span>
+                        <span onclick="cbSendQuick('¿Cuáles son los horarios?')" style="font-size:11px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:20px;padding:4px 9px;cursor:pointer;">🕐 Horarios</span>
+                        <span onclick="cbSendQuick('¿Cómo puedo pagar?')" style="font-size:11px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:20px;padding:4px 9px;cursor:pointer;">💳 Pagos</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Input -->
-        <div class="px-3 py-2 border-t bg-white flex gap-2 items-center">
-            <input 
-                type="text" 
-                id="chatbot-input" 
-                placeholder="Escribe un mensaje..." 
-                class="flex-1 text-sm border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:border-amber-500"
-                onkeypress="if(event.key==='Enter') sendMessage()"
+        <div style="padding:10px 12px;border-top:1px solid #e5e7eb;background:#fff;display:flex;gap:8px;align-items:center;">
+            <input
+                type="text"
+                id="chatbot-input"
+                placeholder="Escribe un mensaje..."
+                style="flex:1;font-size:13px;border:1px solid #d1d5db;border-radius:20px;padding:7px 14px;outline:none;background:#f9fafb;color:#111;"
+                onkeydown="if(event.key==='Enter') cbSend()"
+                onfocus="this.style.borderColor='#b45309'"
+                onblur="this.style.borderColor='#d1d5db'"
             >
-            <button onclick="sendMessage()" class="bg-amber-700 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-amber-800 flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            <button onclick="cbSend()" style="width:34px;height:34px;background:#92400e;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                    <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                 </svg>
             </button>
         </div>
     </div>
 
     <!-- Botón flotante -->
-    <button onclick="toggleChatbot()" id="chatbot-btn" class="w-14 h-14 bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all duration-300 hover:scale-110">
+    <button onclick="cbToggle()" id="chatbot-btn"
+        style="width:52px;height:52px;background:#92400e;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.2);"
+        onmouseover="this.style.transform='scale(1.1)'"
+        onmouseout="this.style.transform='scale(1)'">
         <span id="chatbot-icon">☕</span>
     </button>
 </div>
 
+<style>
+    @keyframes cbBounce {
+        0%,60%,100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+</style>
+
 <script>
-const responses = {
-    menu: {
-        keywords: ['menú', 'menu', 'carta', 'productos', 'comida', 'qué hay', 'que hay', 'qué tienen', 'que tienen'],
-        answer: '📋 Tenemos varias categorías en nuestro menú:\n\n🍳 <b>Desayunos</b> - desde Bs. 15<br>🍽️ <b>Almuerzos</b> - desde Bs. 28<br>☕ <b>Bebidas</b> - desde Bs. 6<br>🥪 <b>Snacks</b> - desde Bs. 18<br>🍰 <b>Postres</b> - desde Bs. 10<br><br>👉 <a href="/menu" class="text-amber-600 underline font-semibold">Ver menú completo</a>'
-    },
-    pedido: {
-        keywords: ['pedido', 'pedir', 'ordenar', 'comprar', 'cómo hago', 'como hago', 'solicitar'],
-        answer: '🛒 Para hacer un pedido es muy fácil:<br><br>1️⃣ Ve al <a href="/menu" class="text-amber-600 underline">menú</a><br>2️⃣ Agrega productos al carrito<br>3️⃣ Ve al <a href="/carrito" class="text-amber-600 underline">carrito</a><br>4️⃣ Elige tu método de pago<br>5️⃣ ¡Listo! Tu pedido será preparado 🎉'
-    },
-    horario: {
-        keywords: ['horario', 'hora', 'abierto', 'cierra', 'abre', 'cuando', 'cuándo'],
-        answer: '🕐 Nuestros horarios de atención:<br><br>📅 <b>Lunes a Viernes:</b> 7:30 AM - 6:00 PM<br>📅 <b>Sábados:</b> 8:00 AM - 2:00 PM<br>📅 <b>Domingos:</b> Cerrado 😴'
-    },
-    pago: {
-        keywords: ['pago', 'pagar', 'precio', 'costo', 'método', 'metodo', 'qr', 'stripe', 'tarjeta', 'efectivo'],
-        answer: '💳 Aceptamos los siguientes métodos de pago:<br><br>📱 <b>Pago QR</b> - Sube tu comprobante<br>💳 <b>Tarjeta</b> - Visa/Mastercard vía Stripe<br><br>El pago se verifica antes de confirmar tu pedido ✅'
-    },
-    estado: {
-        keywords: ['estado', 'mi pedido', 'rastrear', 'seguimiento', 'dónde', 'donde', 'listo', 'cuánto tarda'],
-        answer: '📦 Para ver el estado de tu pedido:<br><br>👉 Ve a <a href="/pedidos" class="text-amber-600 underline">Mis Pedidos</a><br><br>Los estados son:<br>⏳ Pendiente → ✅ Confirmado → 👨‍🍳 Preparando → 🔔 Listo → ✔️ Completado'
-    },
-    contacto: {
-        keywords: ['contacto', 'teléfono', 'telefono', 'llamar', 'whatsapp', 'hablar', 'persona'],
-        answer: '📞 Puedes contactarnos por:<br><br>💬 <b>WhatsApp:</b> <a href="https://wa.me/59167177161" target="_blank" class="text-green-600 underline">+591 67177161</a><br>📧 <b>Email:</b> info@coffeenotfound.edu.bo<br><br>¡Estamos para ayudarte! 😊'
-    },
-    vegano: {
-        keywords: ['vegetariano', 'vegano', 'sin carne', 'saludable', 'dieta'],
-        answer: '🌱 ¡Sí tenemos opciones! Contamos con:<br><br>🥗 <b>Plato Vegetariano</b> - Quinoa orgánica, verduras y aguacate (Bs. 28)<br><br>Está marcado con 🌱 en el menú. <a href="/menu" class="text-amber-600 underline">Ver menú</a>'
-    },
-    default: '🤔 No estoy seguro de cómo ayudarte con eso. Puedes:\n\n👉 Llamarnos al <a href="https://wa.me/59167177161" target="_blank" class="text-green-600 underline">+591 67177161</a><br>👉 Ver nuestro <a href="/menu" class="text-amber-600 underline">menú</a><br>👉 Revisar tus <a href="/pedidos" class="text-amber-600 underline">pedidos</a>'
-};
+let cbOpen    = false;
+let cbWaiting = false;
+let cbHistory = [];
 
-function toggleChatbot() {
-    const window_ = document.getElementById('chatbot-window');
+function cbToggle() {
+    cbOpen = !cbOpen;
+    const win  = document.getElementById('chatbot-window');
     const icon = document.getElementById('chatbot-icon');
-    if (window_.classList.contains('hidden')) {
-        window_.classList.remove('hidden');
-        window_.classList.add('flex');
-        icon.textContent = '✕';
-    } else {
-        window_.classList.add('hidden');
-        window_.classList.remove('flex');
-        icon.textContent = '☕';
-    }
+    win.style.display = cbOpen ? 'flex' : 'none';
+    icon.textContent  = cbOpen ? '✕' : '☕';
 }
 
-function addMessage(text, isUser = false) {
-    const messages = document.getElementById('chatbot-messages');
-    const div = document.createElement('div');
-    div.className = `flex gap-2 ${isUser ? 'justify-end' : ''}`;
-    
+function cbAddMsg(text, isUser) {
+    const msgs = document.getElementById('chatbot-messages');
+    const div  = document.createElement('div');
+
     if (isUser) {
-        div.innerHTML = `<div class="bg-amber-700 text-white rounded-2xl rounded-tr-sm px-3 py-2 text-sm max-w-xs">${text}</div>`;
+        div.style.cssText = 'display:flex;justify-content:flex-end;';
+        div.innerHTML = `<div style="background:#92400e;color:#fff;border-radius:12px;border-top-right-radius:2px;padding:8px 12px;font-size:13px;max-width:230px;line-height:1.5;">${text}</div>`;
     } else {
+        div.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
         div.innerHTML = `
-            <div class="w-6 h-6 bg-amber-700 rounded-full flex items-center justify-center text-xs text-white flex-shrink-0 mt-1">☕</div>
-            <div class="bg-white rounded-2xl rounded-tl-sm px-3 py-2 text-sm text-gray-700 shadow-sm max-w-xs">${text}</div>
-        `;
+            <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+            <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 12px;font-size:13px;color:#374151;max-width:230px;line-height:1.5;border:1px solid #e5e7eb;">${text}</div>`;
     }
-    
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
+
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
 }
 
-function getBotResponse(message) {
-    const lower = message.toLowerCase();
-    for (const [key, data] of Object.entries(responses)) {
-        if (key === 'default') continue;
-        if (data.keywords.some(k => lower.includes(k))) {
-            return data.answer;
+function cbShowTyping() {
+    const msgs = document.getElementById('chatbot-messages');
+    const div  = document.createElement('div');
+    div.id = 'cb-typing';
+    div.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
+    div.innerHTML = `
+        <div style="width:24px;height:24px;background:#92400e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:2px;">☕</div>
+        <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:10px 14px;border:1px solid #e5e7eb;display:flex;gap:5px;align-items:center;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#b45309;display:inline-block;animation:cbBounce 1s infinite 0s;"></span>
+            <span style="width:7px;height:7px;border-radius:50%;background:#b45309;display:inline-block;animation:cbBounce 1s infinite 0.2s;"></span>
+            <span style="width:7px;height:7px;border-radius:50%;background:#b45309;display:inline-block;animation:cbBounce 1s infinite 0.4s;"></span>
+        </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+function cbRemoveTyping() {
+    const el = document.getElementById('cb-typing');
+    if (el) el.remove();
+}
+
+async function cbAsk(userMsg) {
+    cbHistory.push({ role: 'user', content: userMsg });
+    cbShowTyping();
+    cbWaiting = true;
+
+    try {
+        const response = await fetch('/chatbot/mensaje', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ messages: cbHistory })
+        });
+
+        const data = await response.json();
+        cbRemoveTyping();
+
+        if (data.error) {
+            cbAddMsg('⚠️ ' + data.error, false);
+        } else {
+            cbHistory.push({ role: 'assistant', content: data.reply });
+            cbAddMsg(data.reply, false);
         }
+
+    } catch (e) {
+        cbRemoveTyping();
+        cbAddMsg('❌ Error de conexión. Intenta de nuevo.', false);
     }
-    return responses.default;
+
+    cbWaiting = false;
 }
 
-function sendMessage() {
+function cbSend() {
+    if (cbWaiting) return;
     const input = document.getElementById('chatbot-input');
-    const text = input.value.trim();
+    const text  = input.value.trim();
     if (!text) return;
-    
-    addMessage(text, true);
     input.value = '';
-    
-    setTimeout(() => {
-        const response = getBotResponse(text);
-        addMessage(response);
-    }, 500);
+    cbAddMsg(text, true);
+    cbAsk(text);
 }
 
-function sendQuickReply(text) {
-    addMessage(text, true);
-    setTimeout(() => {
-        const response = getBotResponse(text);
-        addMessage(response);
-    }, 500);
+function cbSendQuick(text) {
+    if (cbWaiting) return;
+    cbAddMsg(text, true);
+    cbAsk(text);
 }
 </script>

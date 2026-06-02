@@ -8,6 +8,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\CocinaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,14 @@ Route::get('/', function () {
 */
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+/*
+|--------------------------------------------------------------------------
+| CHATBOT
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->post('/chatbot/mensaje', [ChatbotController::class, 'responder'])->name('chatbot.responder');
+
 
 /*
 |--------------------------------------------------------------------------
